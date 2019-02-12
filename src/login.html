@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./assets/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+
+<body>
+
+  <nav class="navbar navbar-dark bg-primary mr-auto">
+    <a class="navbar-brand" href="#">
+      <strong>โปรแกรมเรียกคิว (Q4U)</strong>
+    </a>
+
+    <button class="btn btn-sm" id="btnSetting">
+      <i class="mdi mdi-settings" style="font-size: 1.3rem; color: white;"></i>
+    </button>
+  </nav>
+
+
+  <div class="card" style="margin: 10px;">
+    <div class="card-body">
+      <h5 class="card-title">ลงชื่อเข้าใช้งาน</h5>
+      <h6 class="card-subtitle mb-2 text-muted">ระบุชื่อผู้ใช้งานและรหัสผ่าน</h6>
+      <form>
+        <div class="form-group">
+          <label for="txtUsername">ชื่อผู้ใช้งาน</label>
+          <input type="text" class="form-control" id="txtUsername" aria-describedby="emailHelp"
+            placeholder="ชื่อผู้ใช้งาน">
+        </div>
+        <div class="form-group">
+          <label for="txtPassword">รหัสผ่าน</label>
+          <input type="password" class="form-control" id="txtPassword" placeholder="รหัสผ่าน">
+        </div>
+        <div class="form-group form-check">
+          <input type="checkbox" checked class="form-check-input" id="isRemember">
+          <label class="form-check-label" for="isRemember">จำชื่อผู้ใช้งาน</label>
+        </div>
+        <button type="button" id="btnLogin" class="btn btn-primary">ล๊อกอิน</button>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="modalSetting" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">API SETTINGS</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="txtSettingUrl">API URL (http://localhost:88/api/v1)</label>
+              <input type="text" class="form-control" id="txtSettingUrl" placeholder="http://localhost:88/api/v1">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
+          <button type="button" class="btn btn-primary" id="btnSaveSetting">บันทึก</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>if (typeof module === 'object') { window.module = module; module = undefined; }</script>
+  <script src="./assets/js/vendors/jquery.js"></script>
+  <script src="./assets/js/vendors/bootstrap.min.js"></script>
+  <script src="./assets/js/vendors/axios.js"></script>
+  <script src="./assets/js/vendors/jwt-decoded.js"></script>
+  <script src="./assets/js/vendors/sweetalert2.js"></script>
+  <script src="./assets/js/login.js"></script>
+  <script>if (window.module) module = window.module;</script>
+
+</body>
+
+</html>
