@@ -206,8 +206,8 @@ $(document).ready(async function () {
           </div>
           <div class="d-flex w-100 justify-content-between">
             <div>
+              <p class="mb-1 font-weight-bold">HN : ${v.hn}</p>
               <p class="mb-1">ประเภท: ${v.priority_name}</p>
-              <p class="mb-1">เวลา : ${v.time_serv} น.</p>
             </div>
             <div class="btn-group">
               <button class="btn btn-success" data-action="callQueue" data-number="${v.queue_number}" data-queue-id="${v.queue_id}">เรียกคิว</button>
@@ -233,8 +233,8 @@ $(document).ready(async function () {
           </div>
           <div class="d-flex w-100 justify-content-between">
             <div>
+              <p class="mb-1 font-weight-bold">HN : ${v.hn}</p>
               <p class="mb-1">ประเภท: ${v.priority_name}</p>
-              <p class="mb-1">เวลา : ${v.time_serv} น.</p>
             </div>
             <div class="btn-group">
               <button class="btn btn-success" data-action="callQueue" data-number="${v.queue_number}" data-queue-id="${v.queue_id}">เรียกคิว</button>
@@ -260,8 +260,8 @@ $(document).ready(async function () {
           </div>
           <div class="d-flex w-100 justify-content-between">
             <div>
+              <p class="mb-1 font-weight-bold">HN : ${v.hn}</p>
               <p class="mb-1">ประเภท: ${v.priority_name}</p>
-              <p class="mb-1">เวลา : ${v.time_serv} น.</p>
             </div>
             <div class="btn-group">
               <button class="btn btn-success" data-action="reCallQueue" data-number="${v.queue_number}" data-queue-id="${v.queue_id}">เรียกซ้ำ</button>
@@ -301,8 +301,8 @@ $(document).ready(async function () {
           </div>
           <div class="d-flex w-100 justify-content-between">
             <div>
+              <p class="mb-1 font-weight-bold">HN : ${v.hn}</p>
               <p class="mb-1">ประเภท: ${queue.priority_name}</p>
-              <p class="mb-1">เวลา : ${queue.time_serv} น.</p>
             </div>
             <div class="btn-group">
               <button class="btn btn-success" data-action="reCallQueue" data-number="${queue.queue_number}" data-queue-id="${queue.queue_id}">เรียกซ้ำ</button>
