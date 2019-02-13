@@ -275,7 +275,7 @@ $(document).ready(async function () {
     });
   }
 
-  function setActiveList(queueId, isHistory = 'N') {
+  function setActiveList(queueId, isHistory) {
     var listCurrent = $('#listCurrent');
     listCurrent.empty();
 
@@ -291,6 +291,8 @@ $(document).ready(async function () {
       queue = QUEUES[idx];
     }
 
+    console.log(queue);
+
     if (queue) {
 
       var html = `
@@ -301,7 +303,7 @@ $(document).ready(async function () {
           </div>
           <div class="d-flex w-100 justify-content-between">
             <div>
-              <p class="mb-1 font-weight-bold">HN : ${v.hn}</p>
+              <p class="mb-1 font-weight-bold">HN : ${queue.hn}</p>
               <p class="mb-1">ประเภท: ${queue.priority_name}</p>
             </div>
             <div class="btn-group">
@@ -498,7 +500,7 @@ $(document).ready(async function () {
         }
 
         await callQueue(queueNumber, +roomId, roomNumber, +queueId);
-        setActiveList(queueId);
+        setActiveList(queueId, 'N');
 
       } else {
         Swal.fire({
