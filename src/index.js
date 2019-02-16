@@ -12,10 +12,10 @@ let mainWindow;
 const createWindow = () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 350,
+    width: 300,
     height: 800,
-    alwaysOnTop: true,
-    resizable: false,
+    alwaysOnTop: false,
+    resizable: true,
   });
 
   // and load the index.html of the app.

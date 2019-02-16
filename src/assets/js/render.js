@@ -48,6 +48,32 @@ $(document).ready(async function () {
     }
   }
 
+  async function cancelQueue(queueId) {
+    var _apiUrl = localStorage.getItem('apiUrl');
+    var token = sessionStorage.getItem('token');
+
+    try {
+      const _url = `${_apiUrl}/queue/cancel/${queueId}`;
+      var rs = await axios.delete(_url, { headers: { "Authorization": `Bearer ${token}` } });
+      if (rs.data.statusCode === 200) {
+        getQueue();
+      } else {
+        Swal.fire({
+          type: 'error',
+          title: 'Oops...',
+          text: 'ไม่สามารถยกเลิกคิวได้',
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        type: 'error',
+        title: 'Oops...',
+        text: 'เกิดข้อผิดพลาด',
+      });
+      console.log(error);
+    }
+  }
+
   async function getRooms() {
     var _apiUrl = localStorage.getItem('apiUrl');
     var token = sessionStorage.getItem('token');
@@ -207,10 +233,11 @@ $(document).ready(async function () {
           <div class="d-flex w-100 justify-content-between">
             <div>
               <p class="mb-1 font-weight-bold">HN : ${v.hn}</p>
-              <p class="mb-1">ประเภท: ${v.priority_name}</p>
+              <p class="mb-1">${v.priority_name}</p>
             </div>
             <div class="btn-group">
               <button class="btn btn-success" data-action="callQueue" data-number="${v.queue_number}" data-queue-id="${v.queue_id}">เรียกคิว</button>
+              <button class="btn btn-danger" data-name="btnCancelQueue" data-number="${v.queue_number}" data-queue-id="${v.queue_id}">ยกเลิก</button>
             </div>
           </div>
         </li>
@@ -394,7 +421,7 @@ $(document).ready(async function () {
   $.each(servicePoints, (k, v) => {
     $('#slServicePoints').append($("<option/>", {
       value: v.service_point_id,
-      text: v.service_point_name
+      text: `${v.local_code} - ${v.service_point_name}`
     }));
   });
 
@@ -429,6 +456,24 @@ $(document).ready(async function () {
         keyboard: false,
         backdrop: 'static'
       });
+    }
+  });
+
+  $('body').on('click', 'button[data-name="btnCancelQueue"]', async function (e) {
+    e.preventDefault();
+
+    if (IS_OFFLINE) {
+      Swal.fire({
+        type: 'error',
+        title: 'Oops...',
+        text: 'ไม่สามารถเชื่อมต่อ Notify Server ได้',
+      });
+    } else {
+      var queueNumber = $(this).data('number');
+      var queueId = $(this).data('queue-id');
+      if (queueId) {
+        cancelQueue(queueId);
+      }
     }
   });
 
