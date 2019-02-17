@@ -54,6 +54,7 @@ var doLogin = async function (username, password) {
           alert('เกิดข้อผิดพลาดx')
         }
       } else {
+        Swal.close();
         alert('กรุณาตั้งค่าการเชื่อมต่อ');
       }
     } catch (error) {
