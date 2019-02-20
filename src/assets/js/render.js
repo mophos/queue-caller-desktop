@@ -20,14 +20,44 @@ $(document).ready(async function () {
     return JSON.parse(_servicePoints);
   }
 
-  async function getWorking() {
-    var _apiUrl = localStorage.getItem('apiUrl');
-    var token = sessionStorage.getItem('token');
+  async function printQueue(queueId) {
+    var printerId = localStorage.getItem('printerId');
 
-    var selected = $('#slServicePoints').val();
+    if (printerId) {
+      try {
+        var topic = `/printer/${printerId}`;
+        var _apiUrl = localStorage.getItem('apiUrl');
+        var token = sessionStorage.getItem('token');
 
-    const _url = `${_apiUrl}/queue/working/${selected}`;
-    return axios.get(_url, { headers: { "Authorization": `Bearer ${token}` } });
+        const _url = `${_apiUrl}/print/queue/prepare/print`;
+        const rs = await axios.post(_url, {
+          queueId: queueId,
+          topic: topic
+        }, { headers: { "Authorization": `Bearer ${token}` } });
+
+        if (rs.data) {
+          var data = rs.data;
+          if (data.statusCode === 200) {
+            Swal.fire({
+              type: 'success',
+              text: 'พิมพ์บัตรคิวเรียบร้อย',
+              timer: 2000
+            });
+          }
+        } else {
+          alert(rs.message);
+        }
+      } catch (error) {
+        console.log(error);
+        this.alertService.error('ไม่สามารถพิมพ์บัตรคิวได้');
+      }
+    } else {
+      Swal.fire({
+        type: 'error',
+        title: 'Oops...',
+        text: 'ไม่พบเครื่องพิมพ์',
+      });
+    }
   }
 
   async function getTransfer() {
@@ -264,7 +294,8 @@ $(document).ready(async function () {
               <p class="mb-1">ประเภท: ${v.priority_name}</p>
             </div>
             <div class="btn-group">
-              <button class="btn btn-success" data-action="callQueue" data-number="${v.queue_number}" data-queue-id="${v.queue_id}">เรียกคิว</button>
+            <button class="btn btn-success" data-action="callQueue" data-number="${v.queue_number}" data-queue-id="${v.queue_id}">เรียกคิว</button>
+            <button class="btn btn-primary" data-action="printQueue" data-number="${v.queue_number}" data-queue-id="${v.queue_id}">พิมพ์</button>
             </div>
           </div>
         </li>
@@ -587,6 +618,30 @@ $(document).ready(async function () {
           type: 'error',
           title: 'Oops...',
           text: 'กรุณาระบุห้องตรวจ',
+        });
+      }
+    }
+
+  });
+
+  $('body').on('click', 'button[data-action="printQueue"]', async function () {
+    if (IS_OFFLINE) {
+      Swal.fire({
+        type: 'error',
+        title: 'Oops...',
+        text: 'ไม่สามารถเชื่อมต่อ Notify Server ได้',
+      });
+    } else {
+      var queueNumber = $(this).data('number');
+      var queueId = $(this).data('queue-id');
+
+      if (queueId) {
+        printQueue(queueId);
+      } else {
+        Swal.fire({
+          type: 'error',
+          title: 'Oops...',
+          text: 'ไม่พบคิว',
         });
       }
     }

@@ -76,7 +76,11 @@ $(document).ready(() => {
   $('#btnSetting').on('click', (e) => {
     e.preventDefault();
     var apiUrl = localStorage.getItem('apiUrl');
+    var printerId = localStorage.getItem('printerId');
+
     $('#txtSettingUrl').val(apiUrl);
+    $('#txtPrinterId').val(printerId);
+
     $('#modalSetting').modal({
       keyboard: false,
       backdrop: 'static'
@@ -86,6 +90,7 @@ $(document).ready(() => {
   $('#btnSaveSetting').on('click', (e) => {
     e.preventDefault();
     localStorage.setItem('apiUrl', $('#txtSettingUrl').val());
+    localStorage.setItem('printerId', $('#txtPrinterId').val());
     $('#modalSetting').modal('hide');
   });
 
