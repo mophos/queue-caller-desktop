@@ -114,6 +114,21 @@ $(document).ready(async function () {
     return axios.get(_url, { headers: { "Authorization": `Bearer ${token}` } });
   }
 
+  async function getPriorities() {
+    var _apiUrl = localStorage.getItem('apiUrl');
+    var token = sessionStorage.getItem('token');
+
+    try {
+      const _url = `${_apiUrl}/priorities`;
+      var rs = await axios.get(_url, { headers: { "Authorization": `Bearer ${token}` } });
+      if (rs.data) {
+        setPriorities(rs.data.results);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async function callQueue(queueNumber, roomId, roomNumber, queueId, isCompleted = 'Y') {
     var servicePointId = $('#slServicePoints').val();
 
@@ -133,7 +148,7 @@ $(document).ready(async function () {
     return axios.post(_url, body, { headers: { "Authorization": `Bearer ${token}` } });
   }
 
-  async function doTransfer(queueNumber, queueId, servicePointId, transferServicePointId) {
+  async function doTransfer(queueNumber, queueId, servicePointId, transferServicePointId, priorityId) {
     if (servicePointId === transferServicePointId) {
       Swal.fire({
         type: 'error',
@@ -148,7 +163,8 @@ $(document).ready(async function () {
 
         var body = {
           queueId: queueId,
-          servicePointId: transferServicePointId
+          servicePointId: transferServicePointId,
+          priorityId: priorityId
         };
 
         const _url = `${_apiUrl}/queue/pending`;
@@ -468,7 +484,20 @@ $(document).ready(async function () {
     });
   }
 
+  function setPriorities(priorities) {
+    $('#slTransferPriorities').empty();
+
+    $.each(priorities, (k, v) => {
+      $('#slTransferPriorities').append($("<option/>", {
+        value: v.priority_id,
+        text: `${v.priority_name} (prefix: ${v.priority_prefix})`
+      }));
+    });
+  }
+
   document.title = sessionStorage.getItem('FULLNAME');
+
+  getPriorities();
 
   $('body').on('click', 'button[data-name="btnTransfer"]', async function (e) {
     e.preventDefault();
@@ -511,14 +540,15 @@ $(document).ready(async function () {
   $('#btnDoTransfer').on('click', function (e) {
     var transferServicePointId = $('#slTransferServicePoints').val();
     var servicePointId = $('#slServicePoints').val();
+    var priorityId = $('#slTransferPriorities').val();
 
-    if (transferServicePointId && servicePointId && QUEUE_NUMBER && QUEUE_ID) {
-      doTransfer(QUEUE_NUMBER, QUEUE_ID, servicePointId, transferServicePointId);
+    if (transferServicePointId && servicePointId && QUEUE_NUMBER && QUEUE_ID && priorityId) {
+      doTransfer(QUEUE_NUMBER, QUEUE_ID, servicePointId, transferServicePointId, priorityId);
     } else {
       Swal.fire({
         type: 'error',
         title: 'Oops...',
-        text: 'กรุณาระบุจุดบริการ',
+        text: 'กรุณาระบุข้อมูลให้ครบ',
       });
     }
   });
