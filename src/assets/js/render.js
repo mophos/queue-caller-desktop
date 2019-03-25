@@ -135,7 +135,7 @@ $(document).ready(async function () {
     var _apiUrl = localStorage.getItem('apiUrl');
     var token = sessionStorage.getItem('token');
 
-    const _url = `${_apiUrl}/queue/caller/${queueId}`;
+    const _url = `${_apiUrl}/queue/caller/${queueIdrs}`;
 
     var body = {
       servicePointId: servicePointId,
