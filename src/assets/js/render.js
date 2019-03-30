@@ -22,6 +22,7 @@ $(document).ready(async function () {
 
   async function printQueue(queueId) {
     var printerId = localStorage.getItem('printerId');
+    var printSmallQueue = localStorage.getItem('printSmallQueue') || 'N';
 
     if (printerId) {
       try {
@@ -32,7 +33,8 @@ $(document).ready(async function () {
         const _url = `${_apiUrl}/print/queue/prepare/print`;
         const rs = await axios.post(_url, {
           queueId: queueId,
-          topic: topic
+          topic: topic,
+          printSmallQueue: printSmallQueue
         }, { headers: { "Authorization": `Bearer ${token}` } });
 
         if (rs.data) {

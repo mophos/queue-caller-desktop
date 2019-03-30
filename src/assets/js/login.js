@@ -77,9 +77,11 @@ $(document).ready(() => {
     e.preventDefault();
     var apiUrl = localStorage.getItem('apiUrl');
     var printerId = localStorage.getItem('printerId');
+    var printSmallQueue = localStorage.getItem('printSmallQueue') || 'N';
 
     $('#txtSettingUrl').val(apiUrl);
     $('#txtPrinterId').val(printerId);
+    $('#radioPrinterSmallQueue').prop('checked', printSmallQueue == 'Y' ? true : false);
 
     $('#modalSetting').modal({
       keyboard: false,
@@ -91,6 +93,8 @@ $(document).ready(() => {
     e.preventDefault();
     localStorage.setItem('apiUrl', $('#txtSettingUrl').val());
     localStorage.setItem('printerId', $('#txtPrinterId').val());
+    localStorage.setItem('printSmallQueue', $('#radioPrinterSmallQueue:checked').val() == 'on' ? 'Y' : 'N');
+
     $('#modalSetting').modal('hide');
   });
 
