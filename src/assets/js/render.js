@@ -285,6 +285,7 @@ $(document).ready(async function () {
             </div>
             <div class="btn-group">
               <button class="btn btn-success" data-action="callQueue" data-number="${v.queue_number}" data-queue-id="${v.queue_id}">เรียกคิว</button>
+              <button data-name="btnTransfer" data-queue-id="${v.queue_id}" data-number="${v.queue_number}" class="btn btn-warning">ส่งต่อ</button>
               <button class="btn btn-danger" data-name="btnCancelQueue" data-number="${v.queue_number}" data-queue-id="${v.queue_id}">ยกเลิก</button>
             </div>
           </div>
@@ -341,7 +342,7 @@ $(document).ready(async function () {
             </div>
             <div class="btn-group">
               <button class="btn btn-success" data-action="reCallQueue" data-number="${v.queue_number}" data-queue-id="${v.queue_id}">เรียกซ้ำ</button>
-              <button data-name="btnTransfer" data-queue-id="${v.queue_id}" data-number="${v.queue_number}" class="btn btn-danger">ส่งต่อ</button>
+              <button data-name="btnTransfer" data-queue-id="${v.queue_id}" data-number="${v.queue_number}" class="btn btn-warning">ส่งต่อ</button>
             </div>
           </div>
         </li>
@@ -552,6 +553,36 @@ $(document).ready(async function () {
         title: 'Oops...',
         text: 'กรุณาระบุข้อมูลให้ครบ',
       });
+    }
+  });
+
+  $('#txtQuery').on('keyup', async function (e) {
+
+
+    if (e.keyCode === 13) {
+      var query = e.target.value;
+
+      if (query) {
+        // search
+        var _apiUrl = localStorage.getItem('apiUrl');
+        var token = sessionStorage.getItem('token');
+
+        var selected = $('#slServicePoints').val();
+
+        if (selected) {
+          const _url = `${_apiUrl}/queue/waiting/${selected}`;
+          var rs = await axios.post(_url, { query: query }, { headers: { "Authorization": `Bearer ${token}` } });
+          var data = rs.data;
+
+          if (data.statusCode === 200) {
+            renderListWaiting(data.results);
+          }
+        } else {
+          alert('กรุณาระบุจุดให้บริการ');
+        }
+      } else {
+        getQueue();
+      }
     }
   });
 
