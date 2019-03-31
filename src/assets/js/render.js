@@ -15,6 +15,8 @@ $(document).ready(async function () {
   var QUEUES_TRANSFER = [];
   var IS_OFFLINE = false;
 
+  var DEFAULT_PRIORITY;
+
   async function getServicePoints() {
     var _servicePoints = sessionStorage.getItem('servicePoints');
     return JSON.parse(_servicePoints);
@@ -285,7 +287,7 @@ $(document).ready(async function () {
             </div>
             <div class="btn-group">
               <button class="btn btn-success" data-action="callQueue" data-number="${v.queue_number}" data-queue-id="${v.queue_id}">เรียกคิว</button>
-              <button data-name="btnTransfer" data-queue-id="${v.queue_id}" data-number="${v.queue_number}" class="btn btn-warning">ส่งต่อ</button>
+              <button data-name="btnTransfer" data-priority="${v.priority_id}" data-queue-id="${v.queue_id}" data-number="${v.queue_number}" class="btn btn-warning">ส่งต่อ</button>
               <button class="btn btn-danger" data-name="btnCancelQueue" data-number="${v.queue_number}" data-queue-id="${v.queue_id}">ยกเลิก</button>
             </div>
           </div>
@@ -342,7 +344,7 @@ $(document).ready(async function () {
             </div>
             <div class="btn-group">
               <button class="btn btn-success" data-action="reCallQueue" data-number="${v.queue_number}" data-queue-id="${v.queue_id}">เรียกซ้ำ</button>
-              <button data-name="btnTransfer" data-queue-id="${v.queue_id}" data-number="${v.queue_number}" class="btn btn-warning">ส่งต่อ</button>
+              <button data-name="btnTransfer" data-priority="${v.priority_id}" data-queue-id="${v.queue_id}" data-number="${v.queue_number}" class="btn btn-warning">ส่งต่อ</button>
             </div>
           </div>
         </li>
@@ -514,12 +516,17 @@ $(document).ready(async function () {
     } else {
       QUEUE_NUMBER = $(this).data('number');
       QUEUE_ID = $(this).data('queue-id');
+      DEFAULT_PRIORITY = $(this).data('priority');
 
       $('#modalServicePoints').modal({
         keyboard: false,
         backdrop: 'static'
       });
     }
+  });
+
+  $('#modalServicePoints').on('show.bs.modal', function (e) {
+    $('#slTransferPriorities').val(DEFAULT_PRIORITY);
   });
 
   $('body').on('click', 'button[data-name="btnCancelQueue"]', async function (e) {
