@@ -14,8 +14,8 @@ $(document).ready(async function () {
   var QUEUES_HISTORY = [];
   var QUEUES_TRANSFER = [];
   var IS_OFFLINE = false;
-
   var DEFAULT_PRIORITY;
+  var IS_COMPLETE;
 
   async function getServicePoints() {
     var _servicePoints = sessionStorage.getItem('servicePoints');
@@ -135,10 +135,9 @@ $(document).ready(async function () {
 
   async function callQueue(queueNumber, roomId, roomNumber, queueId, isCompleted = 'Y') {
     var servicePointId = $('#slServicePoints').val();
-
     var _apiUrl = localStorage.getItem('apiUrl');
     var token = sessionStorage.getItem('token');
-
+    IS_COMPLETE = isCompleted;
     const _url = `${_apiUrl}/queue/caller/${queueId}`;
 
     var body = {
@@ -281,11 +280,12 @@ $(document).ready(async function () {
             <h5 class="mb-1">${v.title}${v.first_name} ${v.last_name}</h5>
           </div>
           <div class="d-flex w-100 justify-content-between">
-            <div>
-              <p class="mb-1 font-weight-bold">HN : ${v.hn}</p>
-              <p class="mb-1">${v.priority_name}</p>
-            </div>
+            <p class="mb-1 font-weight-bold">HN : ${v.hn}</p>
+            <p class="mb-1">${v.priority_name}</p>
+          </div>
+          <div class="d-flex w-100 justify-content-between">
             <div class="btn-group">
+              <button class="btn btn-primary" data-action="callQueueInterview" data-number="${v.queue_number}" data-queue-id="${v.queue_id}">ซักประวัติ</button>
               <button class="btn btn-success" data-action="callQueue" data-number="${v.queue_number}" data-queue-id="${v.queue_id}">เรียกคิว</button>
               <button data-name="btnTransfer" data-priority="${v.priority_id}" data-queue-id="${v.queue_id}" data-number="${v.queue_number}" class="btn btn-warning">ส่งต่อ</button>
               <button class="btn btn-danger" data-name="btnCancelQueue" data-number="${v.queue_number}" data-queue-id="${v.queue_id}">ยกเลิก</button>
@@ -369,8 +369,6 @@ $(document).ready(async function () {
       var idx = _.findIndex(QUEUES, { queue_id: +queueId });
       queue = QUEUES[idx];
     }
-
-    console.log(queue);
 
     if (queue) {
 
@@ -659,7 +657,8 @@ $(document).ready(async function () {
 
   });
 
-  $('body').on('click', 'button[data-action="reCallQueue"]', async function () {
+  // call queue interview
+  $('body').on('click', 'button[data-action="callQueueInterview"]', async function () {
     if (IS_OFFLINE) {
       Swal.fire({
         type: 'error',
@@ -680,7 +679,42 @@ $(document).ready(async function () {
           roomNumber = ROOMS[idx].room_number;
         }
 
-        await callQueue(queueNumber, +roomId, roomNumber, +queueId);
+        await callQueue(queueNumber, +roomId, roomNumber, +queueId, 'N');
+        setActiveList(queueId, 'N');
+
+      } else {
+        Swal.fire({
+          type: 'error',
+          title: 'Oops...',
+          text: 'กรุณาระบุห้องตรวจ',
+        });
+      }
+    }
+
+  });
+
+  $('body').on('click', 'button[data-action="reCallQueue"]', async function () {
+    if (IS_OFFLINE) {
+      Swal.fire({
+        type: 'error',
+        title: 'Oops...',
+        text: 'ไม่สามารถเชื่อมต่อ Notify Server ได้',
+      });
+    } else {
+      var queueNumber = $(this).data('number');
+      var queueId = $(this).data('queue-id');
+      var roomId = $('#slRooms').val();
+
+      if (roomId) {
+        var idx = _.findIndex(ROOMS, { room_id: +roomId });
+
+        var roomNumber;
+
+        if (idx > -1) {
+          roomNumber = ROOMS[idx].room_number;
+        }
+        var isComplete = IS_COMPLETE === 'N' ? 'N' : 'Y';
+        await callQueue(queueNumber, +roomId, roomNumber, +queueId, isComplete);
         setActiveList(queueId, 'Y');
 
       } else {
