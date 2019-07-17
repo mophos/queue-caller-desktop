@@ -214,7 +214,7 @@ $(document).ready(async function () {
 
     var selected = $('#slServicePoints').val();
 
-    const _url = `${_apiUrl}/queue/working/history/${selected}`;
+    const _url = `${_apiUrl}/queue/working/history/${selected}?query=`;
     var rs = await axios.get(_url, { headers: { "Authorization": `Bearer ${token}` } });
     if (rs.data) {
       if (rs.data.results) {
