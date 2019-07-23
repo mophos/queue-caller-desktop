@@ -274,7 +274,12 @@ $(document).ready(async function () {
 
     $.each(data, (k, v) => {
       var html = `
-      <li class="list-group-item list-group-item-action flex-column align-items-start">
+      <li class="list-group-item list-group-item-action flex-column align-items-start `;
+      if (v.is_interview == 'Y') {
+        html += 'color-grey';
+      }
+
+      html += `">
           <div class="d-flex w-100 justify-content-between">
             <h5 class="text-danger font-weight-bold">${v.queue_number}</h5>
             <h5 class="mb-1">${v.title}${v.first_name} ${v.last_name}</h5>

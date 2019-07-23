@@ -15,3 +15,7 @@
 .form-control {
   border-radius: 0;
 }
+
+.color-grey {
+  background-color: gainsboro;
+}
