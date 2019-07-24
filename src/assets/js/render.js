@@ -390,12 +390,15 @@ $(document).ready(async function () {
             </div>
             <div class="btn-group">
               <button class="btn btn-success" data-action="reCallQueue" data-number="${queue.queue_number}" data-queue-id="${queue.queue_id}">เรียกซ้ำ</button>
+              <button data-name="btnTransfer" data-priority="${queue.priority_id}" data-queue-id="${queue.queue_id}" data-number="${queue.queue_number}" class="btn btn-warning">ส่งต่อ</button>
             </div>
           </div>
         </li>
       `;
 
       listCurrent.append(html);
+    } else {
+      listCurrent.empty();
     }
 
   }
@@ -520,7 +523,6 @@ $(document).ready(async function () {
       QUEUE_NUMBER = $(this).data('number');
       QUEUE_ID = $(this).data('queue-id');
       DEFAULT_PRIORITY = $(this).data('priority');
-
       $('#modalServicePoints').modal({
         keyboard: false,
         backdrop: 'static'
@@ -556,6 +558,7 @@ $(document).ready(async function () {
     var priorityId = $('#slTransferPriorities').val();
 
     if (transferServicePointId && servicePointId && QUEUE_NUMBER && QUEUE_ID && priorityId) {
+      setActiveList(null, 'N');
       doTransfer(QUEUE_NUMBER, QUEUE_ID, servicePointId, transferServicePointId, priorityId);
     } else {
       Swal.fire({
