@@ -67,11 +67,11 @@ $(document).ready(async function () {
   async function getTransfer() {
     var _apiUrl = localStorage.getItem('apiUrl');
     var token = sessionStorage.getItem('token');
-
     var selected = $('#slServicePoints').val();
+    var prioityId = $('#slPriorities').val();
 
     try {
-      const _url = `${_apiUrl}/queue/pending/${selected}`;
+      const _url = `${_apiUrl}/queue/pending/${selected}?prioityId=${prioityId}`;
       var rs = await axios.get(_url, { headers: { "Authorization": `Bearer ${token}` } });
       if (rs.data.statusCode === 200) {
         QUEUES_TRANSFER = rs.data.results;
@@ -126,6 +126,7 @@ $(document).ready(async function () {
       const _url = `${_apiUrl}/priorities`;
       var rs = await axios.get(_url, { headers: { "Authorization": `Bearer ${token}` } });
       if (rs.data) {
+        setTranferPriorities(rs.data.results);
         setPriorities(rs.data.results);
       }
     } catch (error) {
@@ -211,10 +212,10 @@ $(document).ready(async function () {
   async function getHistory() {
     var _apiUrl = localStorage.getItem('apiUrl');
     var token = sessionStorage.getItem('token');
-
     var selected = $('#slServicePoints').val();
+    var prioityId = $('#slPriorities').val();
 
-    const _url = `${_apiUrl}/queue/working/history/${selected}?query=`;
+    const _url = `${_apiUrl}/queue/working/history/${selected}?query=&prioityId=${prioityId}`;
     var rs = await axios.get(_url, { headers: { "Authorization": `Bearer ${token}` } });
     if (rs.data) {
       if (rs.data.results) {
@@ -229,11 +230,11 @@ $(document).ready(async function () {
     try {
       var _apiUrl = localStorage.getItem('apiUrl');
       var token = sessionStorage.getItem('token');
-
       var selected = $('#slServicePoints').val();
+      var prioityId = $('#slPriorities').val();
 
       const _url = `${_apiUrl}/queue/waiting/${selected}`;
-      const rs = await axios.get(_url, { headers: { "Authorization": `Bearer ${token}` } });
+      const rs = await axios.post(_url, { query: '', prioityId: prioityId }, { headers: { "Authorization": `Bearer ${token}` } });
 
       if (rs.data) {
         // clear all queue
@@ -243,7 +244,6 @@ $(document).ready(async function () {
 
         var data = rs.data;
         if (data.statusCode === 200) {
-          console.log(data.results);
           renderListWaiting(data.results);
         }
       } else {
@@ -492,11 +492,30 @@ $(document).ready(async function () {
     });
   }
 
-  function setPriorities(priorities) {
+  function setTranferPriorities(priorities) {
     $('#slTransferPriorities').empty();
 
+    $('#slTransferPriorities').append($("<option/>", {
+      value: '',
+      text: `-- เลือกประเภท --`
+    }));
     $.each(priorities, (k, v) => {
       $('#slTransferPriorities').append($("<option/>", {
+        value: v.priority_id,
+        text: `${v.priority_name} (prefix: ${v.priority_prefix})`
+      }));
+    });
+  }
+
+  function setPriorities(priorities) {
+    $('#slPriorities').empty();
+
+    $('#slPriorities').append($("<option/>", {
+      value: '',
+      text: `-- เลือกประเภท --`
+    }));
+    $.each(priorities, (k, v) => {
+      $('#slPriorities').append($("<option/>", {
         value: v.priority_id,
         text: `${v.priority_name} (prefix: ${v.priority_prefix})`
       }));
@@ -576,12 +595,12 @@ $(document).ready(async function () {
         // search
         var _apiUrl = localStorage.getItem('apiUrl');
         var token = sessionStorage.getItem('token');
-
         var selected = $('#slServicePoints').val();
+        var prioityId = $('#slPriorities').val();
 
         if (selected) {
           const _url = `${_apiUrl}/queue/waiting/${selected}`;
-          var rs = await axios.post(_url, { query: query }, { headers: { "Authorization": `Bearer ${token}` } });
+          var rs = await axios.post(_url, { query: query, prioityId: prioityId }, { headers: { "Authorization": `Bearer ${token}` } });
           var data = rs.data;
 
           if (data.statusCode === 200) {
@@ -626,6 +645,25 @@ $(document).ready(async function () {
     }
   });
 
+  $(document).on('change', '#slPriorities', async function (e) {
+    e.preventDefault();
+    var prioityId = $('#slPriorities').val();
+    // if (prioityId) {
+    try {
+      $('#listCurrent').empty();
+      getQueue();
+      getHistory();
+      getTransfer();
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        type: 'error',
+        title: 'Oops...',
+        text: 'เกิดข้อผิดพลาดบางประการ',
+      });
+    }
+    // }
+  });
   // call queue
   $('body').on('click', 'button[data-action="callQueue"]', async function () {
     if (IS_OFFLINE) {
