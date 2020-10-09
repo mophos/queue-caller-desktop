@@ -46,6 +46,9 @@
     <li class="nav-item">
       <a class="nav-link show" data-toggle="tab" href="#transfer">ส่งต่อ</a>
     </li>
+    <li class="nav-item">
+      <a class="nav-link show" data-toggle="tab" href="#caller">เรียกคิวทั้งหมด</a>
+    </li>
   </ul>
 
   <div id="myTabContent" class="tab-content">
@@ -65,6 +68,21 @@
 
     <div class="tab-pane fade" id="transfer">
       <ul class="list-group" id="listTransfer"></ul>
+    </div>
+
+    <div class="tab-pane fade" id="caller">
+      <div class="row">
+        <div class="col-sm-10">
+          <input id="txtQueue" type="text" placeholder="ระบุ คิว" class="form-control">
+        </div>
+        <div class="col-sm-2">
+          <button type="button" class="btn btn-large btn-success" id="btn-caller-all">
+            เรียกคิว
+          </button>
+        </div>
+      </div>
+      <ul class="list-group" id="listCurrent"></ul>
+      <ul class="list-group" id="listWaiting"></ul>
     </div>
 
   </div>

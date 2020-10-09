@@ -232,7 +232,7 @@ $(document).ready(async function () {
 
       var selected = $('#slServicePoints').val();
 
-      const _url = `${_apiUrl}/queue/waiting/${selected}`;
+      const _url = `${_apiUrl}/queue/waiting/${selected}?limit=200`;
       const rs = await axios.get(_url, { headers: { "Authorization": `Bearer ${token}` } });
 
       if (rs.data) {
@@ -569,6 +569,29 @@ $(document).ready(async function () {
     }
   });
 
+  $('#txtQueue').on('keyup', async function (e) {
+    if (e.keyCode) {
+      var servicePointId = $('#slServicePoints').val();
+      var queue = $('#txtQueue').val();
+      if (queue && servicePointId) {
+        await searchQueue(queue);
+      } else {
+        alert('กรุณาระบุหมายเลขคิว และเลือกห้องตรวจ')
+      }
+    }
+  });
+
+  $('#btn-caller-all').on('click', async function (e) {
+    var queue = $('#txtQueue').val();
+    var servicePointId = $('#slServicePoints').val();
+      var queue = $('#txtQueue').val();
+      if (queue && servicePointId) {
+        await searchQueue(queue);
+      } else {
+        alert('กรุณาระบุหมายเลขคิว และเลือกห้องตรวจ')
+      }
+  });
+
   $('#txtQuery').on('keyup', async function (e) {
 
 
@@ -583,7 +606,7 @@ $(document).ready(async function () {
         var selected = $('#slServicePoints').val();
 
         if (selected) {
-          const _url = `${_apiUrl}/queue/waiting/${selected}`;
+          const _url = `${_apiUrl}/queue/waiting/${selected}?limit=200`;
           var rs = await axios.post(_url, { query: query }, { headers: { "Authorization": `Bearer ${token}` } });
           var data = rs.data;
 
@@ -760,6 +783,48 @@ $(document).ready(async function () {
 
   });
 
+
+  async function searchQueue(queue) {
+    try {
+      var _apiUrl = localStorage.getItem('apiUrl');
+      var token = sessionStorage.getItem('token');
+
+      var selectedRoom = $('#slRooms').val();
+      // var selected = $('#slServicePoints').val();
+
+      const _url = `${_apiUrl}/queue/search?limit=1&query=${queue}`;
+      const rs = await axios.get(_url, { headers: { "Authorization": `Bearer ${token}` } });
+      if (rs.data) {
+        if (rs.data.results.length == 1) {
+          const data = rs.data.results[0];
+          var idx = _.findIndex(ROOMS, { room_id: +selectedRoom });
+          var roomNumber;
+          if (idx > -1) {
+            roomNumber = ROOMS[idx].room_number;
+          }
+          callQueue(data.queue_number, +selectedRoom, roomNumber, data.queue_id);
+        }
+        else {
+          alert('ไม่พบคิว')
+        }
+        // // clear all queue
+        // QUEUES = [];
+        // // set new queues
+        // QUEUES = rs.data.results;
+
+        // var data = rs.data;
+        // if (data.statusCode === 200) {
+        //   console.log(data.results);
+        //   renderListWaiting(data.results);
+        // }
+      } else {
+        alert(rs.message);
+      }
+    } catch (error) {
+      alert(error.message);
+      console.error(error);
+    }
+  }
 });
 
 

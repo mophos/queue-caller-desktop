@@ -103,4 +103,12 @@ $(document).ready(() => {
     var password = $('#txtPassword').val();
     doLogin(username, password);
   });
+
+  $('#txtPassword').on('keyup', (e) => {
+    if (e.keyCode == 13) {
+      var username = $('#txtUsername').val();
+      var password = $('#txtPassword').val();
+      doLogin(username, password);
+    }
+  })
 });
